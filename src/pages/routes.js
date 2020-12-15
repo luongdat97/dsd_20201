@@ -57,6 +57,12 @@ import ImageGallery from "./Incident/ImageGallery";
 import VideoGallery from "./Incident/VideoGallery";
 import IncidentEdit from "./Incident/Incident/edit";
 
+// Tree function 1
+import VideoSurveillance from './GroupFunction1/VideoSurveillance';
+import CaregiverCoordinate from './GroupFunction1/CaregiverCoordinate';
+import ResultTracking from './GroupFunction1/ResultTracking';
+import MonitorCropStatusNew from './GroupFunction1/MonitorCropStatusNew';
+
 export const routes = [
   {
     path: '/dashboard',
@@ -318,6 +324,23 @@ export const routes = [
     path: "/videoGallery",
     component: () => <VideoGallery />,
     exact: true
+  },
+
+  {
+    path: '/tree-video-surveillance',
+    component: VideoSurveillance,
+  },
+  {
+    path: '/tree-caregiver-coordinate',
+    component: CaregiverCoordinate,
+  },
+  {
+    path: '/tree-result-tracking',
+    component: ResultTracking,
+  },
+  {
+    path: '/tree-monitor-crop-status',
+    component: MonitorCropStatusNew,
   },
 ];
 
