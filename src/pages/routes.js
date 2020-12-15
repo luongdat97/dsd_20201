@@ -64,12 +64,6 @@ import CaregiverCoordinate from './GroupFunction1/CaregiverCoordinate';
 import ResultTracking from './GroupFunction1/ResultTracking';
 import MonitorCropStatusNew from './GroupFunction1/MonitorCropStatusNew';
 
-// Tree function 1
-import VideoSurveillance from './GroupFunction1/VideoSurveillance';
-import CaregiverCoordinate from './GroupFunction1/CaregiverCoordinate';
-import ResultTracking from './GroupFunction1/ResultTracking';
-import MonitorCropStatusNew from './GroupFunction1/MonitorCropStatusNew';
-
 export const routes = [
   {
     path: '/dashboard',
@@ -312,7 +306,6 @@ export const routes = [
     path: '/user-meta',
     component: ListUserMeta,
   },
-<<<<<<< HEAD
   {
     path: "/incidents",
     component: () => <Incident />,
@@ -334,10 +327,6 @@ export const routes = [
     component: () => <VideoGallery />,
     exact: true
   },
-=======
-
-
->>>>>>> 770b403 (update group function 1)
 
   {
     path: '/tree-video-surveillance',

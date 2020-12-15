@@ -287,10 +287,6 @@ export const sidebarMenu = [
       },
     ],
   },
-<<<<<<< HEAD
-=======
-
->>>>>>> 770b403 (update group function 1)
   {
     key: 'TreeMonitor',
     heading: 'Cây trồng',
