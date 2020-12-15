@@ -43,7 +43,7 @@ class ProblemDetail extends React.Component {
             style={{zIndex: "100 !important"}}
             width={1000}
           >
-            <h6>Loại sự cố: cây trồng bị gãy đổ</h6>
+            <h4>Loại sự cố: cây trồng bị gãy đổ</h4>
             <p>Mức độ: nghiêm trọng</p>
             <p>Vị trí tọa độ: 41.40338, 2.17403</p>
             <p>Hình ảnh thu thập từ drone:</p>

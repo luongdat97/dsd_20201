@@ -46,7 +46,7 @@ class DroneListPage extends Component {
         <Row gutter={15}>
           <Col span={4}>
 
-            <h5>Chọn drone cần quan sát</h5>
+            <h3>Chọn drone cần quan sát</h3>
             <DroneList
               onCenterChange={this.onCenterChange}
               onSelectedDroneIdChange={this.onSelectedDroneIdChange}
@@ -97,7 +97,7 @@ class DroneInfoMap extends Component {
       // Important! Always set the container height explicitly
       <div style={{ height: '100vh', width: '100%' }}>
         <GoogleMapReact
-          bootstrapURLKeys={{ key: "AIzaSyDUJI3UXw2arRqiUIIYaANQtMurg6__hnI" }}
+          bootstrapURLKeys={{ key: "AIzaSyAkeBYx0fsFBioJeXada8dJAd3eVrDtYTI" }}
           center={this.props.center}
           zoom={this.props.zoom}
           onBoundsChange={this.props.onBoundsChange}
@@ -280,7 +280,7 @@ class DronePopover extends React.Component {
   render() {
     const content = (
       <div>
-        <h6>Drone DR01</h6>
+        <h3>Drone DR01</h3>
         <p>Vị trí: 20.912, 105.23</p>
       </div>
     );
