@@ -65,12 +65,12 @@ class VideoSurveillance extends Component {
     return (
       <div style={{ background: '#ffffff' }}>
         <StepSurveillance currentStep={2} />
-        <Row direction="horizontal" gutter={10}>
-          <Col span={4}>
+        <Row direction="horizontal">
+          <Col span={4} style={{paddingRight: 15}}>
 
             <Space direction="vertical">
-              <h6>Drone DR043 </h6>
-              <h6>Vị trí hiện tại:</h6>
+              <h3>Drone DR043 </h3>
+              <h3>Vị trí hiện tại:</h3>
               <p>
                 <span>Kinh độ: 100</span>
                 <br />
@@ -84,7 +84,7 @@ class VideoSurveillance extends Component {
                      video: { ...prevState.video, captureFrame: frame.dataUri },
                     capturedImages: [...this.state.capturedImages, frame.dataUri]
                   }))
-                }}> <i class="far fa-camera"></i> Lấy ảnh tại vị trí hiện tại</Button>
+                }}> <i class="far fa-camera"></i> Chụp ảnh vị trí hiện tại</Button>
               }
               
               {this.state.video.captureFrame && this.state.display==="video" && 
@@ -183,7 +183,7 @@ class DroneInfoMap extends Component {
       // Important! Always set the container height explicitly
       <div style={{ height: '100vh', width: '100%' }}>
         <GoogleMapReact
-          bootstrapURLKeys={{ key: "AIzaSyDUJI3UXw2arRqiUIIYaANQtMurg6__hnI" }}
+          bootstrapURLKeys={{ key: "AIzaSyAkeBYx0fsFBioJeXada8dJAd3eVrDtYTI" }}
           center={this.props.center}
           zoom={this.props.zoom}
           onBoundsChange={this.props.onBoundsChange}
@@ -255,7 +255,7 @@ class DronePopover extends React.Component {
   render() {
     const content = (
       <div>
-        <h6>Drone DR01</h6>
+        <h4>Drone DR01</h4>
         <p>Vị trí: 20.912, 105.23</p>
       </div>
     );
@@ -303,7 +303,7 @@ class TreePopover extends React.Component {
   render() {
     const content = (
       <div>
-        <h6>Cây trồng bị gãy đổ</h6>
+        <h4>Cây trồng bị gãy đổ</h4>
         <p>Vị trí: 20.912, 105.23</p>
         <TreeDetail hidePopover={this.hide} />
       </div>
@@ -358,7 +358,7 @@ class TreeDetail extends React.Component {
           style={{ zIndex: "100 !important" }}
           width={1000}
         >
-          <h6>Loại sự cố: cây trồng bị gãy đổ</h6>
+          <h4>Loại sự cố: cây trồng bị gãy đổ</h4>
           <p>Mức độ: nghiêm trọng</p>
           <p>Vị trí tọa độ: 41.40338, 2.17403</p>
           <p>Hình ảnh thu thập từ drone:</p>
@@ -414,7 +414,7 @@ class ReportProblem extends React.Component {
         >
           <Space direction="vertical">
             <div>
-              <h6>Chọn loại sự cố:</h6>
+              <h4>Chọn loại sự cố:</h4>
               <Select defaultValue="Loại sự cố" style={{ width: 120 }}>
                 <Option value="1">Gãy đổ</Option>
                 <Option value="2">Ngập úng</Option>
@@ -424,7 +424,7 @@ class ReportProblem extends React.Component {
               </Select>
             </div>
             <div>
-              <h6>Chọn mức độ cảnh báo:</h6>
+              <h4>Chọn mức độ cảnh báo:</h4>
               <Select defaultValue="Mức độ" style={{ width: 120 }}>
                 <Option value="1">Nghiêm trọng</Option>
                 <Option value="2">Trung bình</Option>

@@ -14,9 +14,9 @@ export default function ProblemReport() {
                     <p><span className="font-weight-bold">Mô tả chi tiết:</span> Cây trồng tại nơi xảy ra sự cố bị sâu bệnh tàn phá nghiêm trọng. Qua quá trình xử lý, phần khu vực này đã được phun thuốc trừ sâu. Quan sát kết quả ghi nhận tại ngày 14/2 đã xử lý được sâu hại.</p>
                 </div>
                 <div className="col col-md-9 py-1">
-                    <h6>Hình ảnh trước khi xử lý:</h6>
+                    <h4>Hình ảnh trước khi xử lý:</h4>
                     <img className="w-75" src='https://drive.google.com/uc?export=view&id=1g8dvxB04UihunL9M3JVvhTbc15VzF0BR'></img>
-                    <h6 className="mt-3">Hình ảnh sau khi xử lý:</h6>
+                    <h4 className="mt-3">Hình ảnh sau khi xử lý:</h4>
                     <img className="w-75" src='https://drive.google.com/uc?export=view&id=1zGWLln0x2j1ughZEgLwqntzjnRZiOo0Q'></img>
                 </div>
                 <div></div>
