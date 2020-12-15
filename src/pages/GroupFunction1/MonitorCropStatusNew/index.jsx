@@ -87,79 +87,6 @@ class DroneListPage extends Component {
   }
 };
 
-class MapTemp extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      listRectangle: []
-    }
-  }
-
-  createMapOptions(maps) {
-    // next props are exposed at maps
-    // "Animation", "ControlPosition", "MapTypeControlStyle", "MapTypeId",
-    // "NavigationControlStyle", "ScaleControlStyle", "StrokePosition", "SymbolPath", "ZoomControlStyle",
-    // "DirectionsStatus", "DirectionsTravelMode", "DirectionsUnitSystem", "DistanceMatrixStatus",
-    // "DistanceMatrixElementStatus", "ElevationStatus", "GeocoderLocationType", "GeocoderStatus", "KmlLayerStatus",
-    // "MaxZoomStatus", "StreetViewStatus", "TransitMode", "TransitRoutePreference", "TravelMode", "UnitSystem"
-    return {
-      mapTypeId: maps.MapTypeId.SATELLITE,
-    };
-  }
-
-  addRectange = (rectangle) => {
-    this.setState({ listRectangle: [...this.state.listRectangle, rectangle] })
-  }
-
-  handleApiLoaded = (map, maps) => {
-    let drawingManager = new maps.drawing.DrawingManager({
-      drawingMode: maps.drawing.OverlayType.RECTANGLE,
-      drawingControl: true,
-      drawingControlOptions: {
-        position: maps.ControlPosition.TOP_CENTER,
-        drawingModes: [
-          maps.drawing.OverlayType.RECTANGLE,
-        ],
-      },
-
-      rectangleOptions: {
-        fillColor: "#ffff00",
-        fillOpacity: 0.1,
-        strokeWeight: 5,
-        clickable: true,
-        editable: true,
-        zIndex: 1,
-      },
-    }
-    );
-    maps.event.addDomListener(drawingManager, 'rectanglecomplete', function (rectangle) {
-      console.log(rectangle)
-      drawingManager.setDrawingMode(null);
-      rectangle.addListener("rightclick", () => rectangle.setMap(null));
-    })
-    drawingManager.setMap(map);
-  };
-
-  render() {
-    return (
-      // Important! Always set the container height explicitly
-      <div style={{ height: '100vh', width: '100%' }}>
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: "AIzaSyDUJI3UXw2arRqiUIIYaANQtMurg6__hnI", libraries: 'drawing' }}
-          center={this.props.center}
-          zoom={this.props.zoom}
-          onBoundsChange={this.props.onBoundsChange}
-          options={this.createMapOptions}
-          hoverDistance={20}
-          yesIWantToUseGoogleMapApiInternals
-          onGoogleApiLoaded={({ map, maps }) => this.handleApiLoaded(map, maps)}
-        >
-        </GoogleMapReact>
-      </div>
-    );
-  }
-}
-
 class DroneInfoMap extends Component {
   constructor(props) {
     super(props);
@@ -218,7 +145,7 @@ class DroneInfoMap extends Component {
       // Important! Always set the container height explicitly
       <div style={{ height: '100vh', width: '100%' }}>
         <GoogleMapReact
-          bootstrapURLKeys={{ key: "AIzaSyAkeBYx0fsFBioJeXada8dJAd3eVrDtYTI", libraries: 'drawing' }}
+          bootstrapURLKeys={{ key: "AIzaSyAkeBYx0fsFBioJeXada8dJAd3eVrDtYTI", libraries: 'drawing',sensor:false }}
           center={this.props.center}
           zoom={this.props.zoom}
           onBoundsChange={this.props.onBoundsChange}

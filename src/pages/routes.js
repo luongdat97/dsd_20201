@@ -327,7 +327,6 @@ export const routes = [
     component: () => <VideoGallery />,
     exact: true
   },
-
   {
     path: '/tree-video-surveillance',
     component: VideoSurveillance,
