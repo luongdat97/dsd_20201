@@ -10,15 +10,16 @@ class VideoSurveillance extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      areaListData: null,
-      isLoadedAreaListData: false,
+      zoneListData: null,
+      areaData: null,
+      isLoadedZoneListData: false,
       center: {
         lat: 20.91507,
         lng: 105.74766
       },
       zoom: 12,
-      selectedAreaKey: null,
-      selectedAreaId: null,
+      selectedZoneKey: null,
+      selectedZoneId: null,
     };
 
   }
@@ -32,30 +33,55 @@ class VideoSurveillance extends Component {
   onBoundsChange = (center, zoom) => {
     this.setState({ center: center, zoom: zoom });
   }
-  onSelectedAreaKeyChange = (areakey) => {
-    let areaInfo = this.state.areaListData.find(areaInfo => areaInfo.key == areakey)
-    this.setState({ selectedAreaKey: areakey, selectedAreaId: areaInfo._id, center: { lat: areaInfo.startPoint.latitude, lng: areaInfo.startPoint.longitude } });
+  onSelectedZoneKeyChange = (zonekey) => {
+    let zoneInfo = this.state.zoneListData.find(zoneInfo => zoneInfo.key == zonekey)
+    this.setState({ selectedZoneKey: zonekey, selectedZoneId: zoneInfo._id, center: { lat: zoneInfo.startPoint.latitude, lng: zoneInfo.startPoint.longitude } });
   }
-  setAreaListData() {
-    let url = 'https://monitoredzoneserver.herokuapp.com/area?page=0';
+
+  setAreaData = () => {
+    let url = 'https://monitoredzoneserver.herokuapp.com/area/areainfo/' + this.props.selectedAreaId;
 
     let config = {
       method: 'get',
       url: url,
-      headers: {}
+      headers: {
+        projectType: 'CAY_TRONG',
+        token: 'f5134fcb341b492ea9776485fbd62890',
+      }
     };
     axios(config)
       .then((response) => {
-        let areaListData = response.data.content.monitoredArea.map((data, index) => ({
+        let areaData = response.data.content.area;
+        this.setState({ areaData: areaData, center: {lat: areaData.startPoint.latitude, lng: areaData.startPoint.longitude}});
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  setZoneListData() {
+    let url = 'https://monitoredzoneserver.herokuapp.com/monitoredzone/area/' + this.props.selectedAreaId;
+
+    let config = {
+      method: 'get',
+      url: url,
+      headers: {
+        projectType: 'CAY_TRONG',
+        token: 'f5134fcb341b492ea9776485fbd62890',
+      }
+    };
+    axios(config)
+      .then((response) => {
+        let zoneListData = response.data.content.zone.map((data, index) => ({
           key: index,
           ...data
         }));
-        areaListData.forEach((logData) => {
+        zoneListData.forEach((logData) => {
           for (let key in logData) {
             if (logData[key] == null) logData[key] = '';
           }
         });
-        this.setState({ areaListData: areaListData, isLoadedAreaListData: true, center: {lat: areaListData[1].startPoint.latitude, lng: areaListData[1].startPoint.longitude} });
+        this.setState({ zoneListData: zoneListData, isLoadedZoneListData: true });
       })
       .catch(function (error) {
         console.log(error);
@@ -63,45 +89,49 @@ class VideoSurveillance extends Component {
   }
 
   componentDidMount() {
-    this.setAreaListData();
+    this.setZoneListData();
+    this.setAreaData();
   }
   
   render() {
     const error = () => {
       message.error('Bạn chưa chọn khu vực nào !');
     };
+    const areaName = this.state.areaData ? this.state.areaData.name : null;
 
     return (
       <div style={{ background: '#ffffff' }}>
-        <StepSurveillance currentStep={0} />
+        <StepSurveillance currentStep={1} areaName={areaName} />
         <Row gutter={10}>
           <Col span={4}>
 
-            <h3>Chọn khu vực cần theo dõi</h3>
+            <h3>Chọn miền giám sát cần theo dõi</h3>
+            <p>Khu vực hiện tại: {areaName}</p>
 
-            <AreaList
+            <ZoneList
               onCenterChange={this.onCenterChange}
-              onSelectedAreaKeyChange={this.onSelectedAreaKeyChange}
-              selectedAreaKey={this.state.selectedAreaKey}
-              areaListData={this.state.areaListData}
-              isLoadedAreaListData={this.state.isLoadedAreaListData}
+              onSelectedZoneKeyChange={this.onSelectedZoneKeyChange}
+              selectedZoneKey={this.state.selectedZoneKey}
+              zoneListData={this.state.zoneListData}
+              isLoadedZoneListData={this.state.isLoadedZoneListData}
             />
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 15 }}>
-              {this.state.selectedAreaKey !== null ? <Button type="primary"><a href={'/tree-video-surveillance/zone-monitor?selectedAreaId=' + this.state.selectedAreaId}>Tiếp theo</a></Button> : null}
-              {!(this.state.selectedAreaKey !== null) && <Button type="primary" onClick={error}>Tiếp theo</Button>}
+              {this.state.selectedZoneKey !== null ? <Button type="primary"><a href={'/tree-video-surveillance/drone-list?selectedZoneId=' + this.state.selectedZoneId}>Tiếp theo</a></Button> : null}
+              {!(this.state.selectedZoneKey !== null) && <Button type="primary" onClick={error}>Tiếp theo</Button>}
             </div>
 
           </Col>
           <Col span={20}>
             <div>
-              {this.state.isLoadedAreaListData &&
-                <AreaListMap
+              {this.state.isLoadedZoneListData &&
+                <ZoneListMap
                   center={this.state.center}
                   zoom={this.state.zoom}
-                  selectedAreaKey={this.state.selectedAreaKey}
+                  selectedZoneKey={this.state.selectedZoneKey}
                   onBoundsChange={this.onBoundsChange}
-                  onSelectedAreaKeyChange={this.onSelectedAreaKeyChange}
-                  areaListData={this.state.areaListData}
+                  onSelectedZoneKeyChange={this.onSelectedZoneKeyChange}
+                  zoneListData={this.state.zoneListData}
+                  areaData={this.state.areaData}
                 />
               }
 
@@ -114,12 +144,12 @@ class VideoSurveillance extends Component {
 };
 
 
-class AreaListMap extends Component {
+class ZoneListMap extends Component {
   constructor(props) {
     super(props);
     this.state = {
       listRectangle: [],
-      selectedAreaKey: null,
+      selectedZoneKey: null,
     }
   }
 
@@ -139,13 +169,45 @@ class AreaListMap extends Component {
     this.setState({ listRectangle: [...this.state.listRectangle, rectangle] })
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ areaListData: nextProps.areaListData })
+    this.setState({ zoneListData: nextProps.zoneListData })
   }
   handleApiLoaded = (map, maps) => {
+    let worldCoords = [
+      new maps.LatLng(-85.1054596961173, -180),
+      new maps.LatLng(85.1054596961173, -180),
+      new maps.LatLng(85.1054596961173, 180),
+      new maps.LatLng(-85.1054596961173, 180),
+      new maps.LatLng(-85.1054596961173, 0)];
+  
+      let startPoint = this.props.areaData.startPoint;
+      let endPoint = this.props.areaData.endPoint;
+      
+      const rectangleCoords = [
+        { lat: startPoint.latitude, lng: startPoint.longitude },
+        { lat: endPoint.latitude, lng: startPoint.longitude },
+        { lat: endPoint.latitude, lng: endPoint.longitude },
+        { lat: startPoint.latitude, lng: endPoint.longitude },
+        
+      ];
+    
+  
+  
+      // Construct the polygon.
+      let poly = new maps.Polygon({
+          paths: [worldCoords, rectangleCoords],
+          strokeColor: '#000000',
+          strokeOpacity: 0.2,
+          strokeWeight: 1,
+          fillColor: '#000000',
+          fillOpacity: 0.35
+      });
+      poly.setMap(map);
+  
+
     let infoWindow = new maps.InfoWindow();
     let reactangleArray = [];
-    if (this.props.areaListData) {
-      reactangleArray = this.props.areaListData.map((data) => {
+    if (this.props.zoneListData) {
+      reactangleArray = this.props.zoneListData.map((data) => {
         let rectangle = new maps.Rectangle({
           strokeColor: "#FF0000",
           strokeOpacity: 0.8,
@@ -162,7 +224,7 @@ class AreaListMap extends Component {
         });
         rectangle.setMap(map);
         rectangle.addListener("click", () => {
-          this.props.onSelectedAreaKeyChange(data.key);
+          this.props.onSelectedZoneKeyChange(data.key);
           const ne = rectangle.getBounds().getNorthEast();
           const sw = rectangle.getBounds().getSouthWest();
 
@@ -184,9 +246,9 @@ class AreaListMap extends Component {
     this.setState({ listRectangle: [...this.state.listRectangle, ...reactangleArray] });
   };
 
-  onSelectedAreaKeyChange = (areakey) => {
+  onSelectedZoneKeyChange = (zonekey) => {
 
-    let selectedRectangle = this.state.listRectangle.find((area) => area.key == areakey);
+    let selectedRectangle = this.state.listRectangle.find((zone) => zone.key == zonekey);
     this.state.listRectangle && this.state.listRectangle.map((rectangleData) => {
       rectangleData.rectangle.setOptions({ fillColor: '#FF0000', strokeColor: '#FF0000' });
     });
@@ -196,7 +258,7 @@ class AreaListMap extends Component {
 
   }
   render() {
-    this.onSelectedAreaKeyChange(this.props.selectedAreaKey);
+    this.onSelectedZoneKeyChange(this.props.selectedZoneKey);
     return (
       // Important! Always set the container height explicitly
       <div style={{ height: '100vh', width: '100%' }}>
@@ -216,7 +278,7 @@ class AreaListMap extends Component {
   }
 }
 
-class AreaList extends React.Component {
+class ZoneList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -291,19 +353,19 @@ class AreaList extends React.Component {
     this.setState({ searchText: '' });
   };
 
-  onSelectedAreaKeyChange = areaKey => {
-    this.props.onSelectedAreaKeyChange(areaKey);
+  onSelectedZoneKeyChange = zoneKey => {
+    this.props.onSelectedZoneKeyChange(zoneKey);
   };
 
   onSelectChange = selectedRowKeys => {
-    this.onSelectedAreaKeyChange(selectedRowKeys[0]);
+    this.onSelectedZoneKeyChange(selectedRowKeys[0]);
   };
 
   render() {
-    this.state.selectedRowKeys = this.props.selectedAreaKey;
+    this.state.selectedRowKeys = this.props.selectedZoneKey;
     const columns = [
       {
-        title: 'Khu vực',
+        title: 'Miền giám sát',
         dataIndex: 'name',
         key: 'name',
         render: text => <a>{text}</a>,
@@ -312,8 +374,8 @@ class AreaList extends React.Component {
 
     ];
     let data = null;
-    if (this.props.areaListData) {
-      data = this.props.areaListData.map(data => ({
+    if (this.props.zoneListData) {
+      data = this.props.zoneListData.map(data => ({
         key: data.key,
         name: data.name,
       }));
@@ -330,7 +392,7 @@ class AreaList extends React.Component {
         <Table 
           columns={columns} 
           dataSource={data} 
-          loading={!this.props.isLoadedAreaListData} 
+          loading={!this.props.isLoadedZoneListData} 
           size="small" 
           rowSelection={{...rowSelection} }
           bordered={false} 
@@ -347,7 +409,7 @@ class StepSurveillance extends React.Component {
   render() {
     return (
       <Steps current={this.props.currentStep} style={{ marginBottom: 15 }}>
-        <Step title="Chọn khu vực" />
+        <Step title="Chọn khu vực" description={'Khu vực ' + this.props.areaName} />
         <Step title="Chọn miền giám sát" />
         <Step title="Chọn drone" />
         <Step title="Giám sát" />

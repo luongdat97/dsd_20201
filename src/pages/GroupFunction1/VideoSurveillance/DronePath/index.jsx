@@ -64,7 +64,7 @@ class VideoSurveillance extends Component {
 
     return (
       <div style={{ background: '#ffffff' }}>
-        <StepSurveillance currentStep={2} />
+        <StepSurveillance currentStep={3} />
         <Row direction="horizontal">
           <Col span={4} style={{paddingRight: 15}}>
 
@@ -481,6 +481,7 @@ class StepSurveillance extends React.Component {
   render(){
     return(
       <Steps current={this.props.currentStep} style={{marginBottom: 15}}>
+        <Step title="Chọn khu vực" />
         <Step title="Chọn miền giám sát" />
         <Step title="Chọn drone" />
         <Step title="Giám sát" />

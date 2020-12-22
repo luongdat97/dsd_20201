@@ -104,32 +104,35 @@ class DroneInfoMap extends Component {
     };
   }
   handleApiLoaded = (map, maps) => {
-    let drawingManager = new maps.drawing.DrawingManager({
-      drawingMode: null,
-      drawingControl: true,
-      drawingControlOptions: {
-        position: maps.ControlPosition.TOP_CENTER,
-        drawingModes: [
-          maps.drawing.OverlayType.RECTANGLE,
-        ],
-      },
-
-      rectangleOptions: {
-        fillColor: "#ffff00",
-        fillOpacity: 0.1,
-        strokeWeight: 5,
-        clickable: true,
-        editable: true,
-        zIndex: 1,
-      },
-    }
-    );
-    maps.event.addDomListener(drawingManager, 'rectanglecomplete', function (rectangle) {
-      console.log(rectangle)
-      drawingManager.setDrawingMode(null);
-      rectangle.addListener("rightclick", () => rectangle.setMap(null));
-    })
-    drawingManager.setMap(map);
+    maps.event.addListenerOnce(map, 'idle', function(){
+      let drawingManager = new maps.drawing.DrawingManager({
+        drawingMode: null,
+        drawingControl: true,
+        drawingControlOptions: {
+          position: maps.ControlPosition.TOP_CENTER,
+          drawingModes: [
+            maps.drawing.OverlayType.RECTANGLE,
+          ],
+        },
+  
+        rectangleOptions: {
+          fillColor: "#ffff00",
+          fillOpacity: 0.1,
+          strokeWeight: 5,
+          clickable: true,
+          editable: true,
+          zIndex: 1,
+        },
+      }
+      );
+      maps.event.addDomListener(drawingManager, 'rectanglecomplete', function (rectangle) {
+        console.log(rectangle)
+        drawingManager.setDrawingMode(null);
+        rectangle.addListener("rightclick", () => rectangle.setMap(null));
+      })
+      drawingManager.setMap(map);
+  });
+    
   };
 
   render() {

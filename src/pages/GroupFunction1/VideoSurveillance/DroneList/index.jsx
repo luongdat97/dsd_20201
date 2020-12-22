@@ -4,23 +4,27 @@ import StyleVideoSurveillance, { droneHoverStyle, droneStyle } from "./index.sty
 import { Row, Col, Button, Popover, Input, Space, Table, Steps } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
+var axios = require('axios');
 const { Step } = Steps;
 
 class DroneListPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      
       center: {
         lat: 20.91507,
         lng: 105.74766
       },
       zoom: 16,
+      activeDroneData: [],
+      isLoadedActiveDroneData: false,
       dronePlaces: [
-        { id: 1, position: { lat: 20.91507, lng: 105.74766 } },
-        { id: 2, position: { lat: 20.91907, lng: 105.74766 } },
-        { id: 3, position: { lat: 20.91707, lng: 105.74966 } },
+        { id: 0, position: { lat: 20.91507, lng: 105.74766 } },
+        { id: 1, position: { lat: 20.91907, lng: 105.74766 } },
+        { id: 2, position: { lat: 20.91707, lng: 105.74966 } },
       ],
-      selectedDroneId: '',
+      selectedDroneId: null,
 
     };
   }
@@ -35,14 +39,46 @@ class DroneListPage extends Component {
     this.setState({ center: center, zoom: zoom });
   }
   onSelectedDroneIdChange = (droneId) => {
-    let droneInfo = this.state.dronePlaces.find(droneInfo => droneInfo.id == droneId % 3 + 1)
+    let droneInfo = this.state.dronePlaces.find(droneInfo => droneInfo.id == droneId % 3)
     this.setState({ selectedDroneId: droneId, center: droneInfo.position });
+  }
+
+  setActiveDroneData = () => {
+    let url = 'http://skyrone.cf:6789/droneState/getAllDroneActiveRealTime';
+
+    let config = {
+      method: 'get',
+      url: url,
+      headers: {}
+    };
+    axios(config)
+      .then((response) => {
+        let activeDroneData = response.data.map((data, index) => ({
+          key: index,
+          ...data
+        }));
+        activeDroneData.forEach((logData) => {
+          for (let key in logData) {
+            if (logData[key] == null) logData[key] = '';
+          }
+        });
+        console.log('haaaaaaaaaaaaaaaa')
+        console.log(activeDroneData)
+        this.setState({ activeDroneData: activeDroneData, isLoadedActiveDroneData: true });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  componentDidMount() {
+    this.setActiveDroneData();
   }
 
   render() {
     return (
       <div style={{ background: '#ffffff' }}>
-        <StepSurveillance currentStep={1} />
+        <StepSurveillance currentStep={2} />
         <Row gutter={15}>
           <Col span={4}>
 
@@ -50,6 +86,7 @@ class DroneListPage extends Component {
             <DroneList
               onCenterChange={this.onCenterChange}
               onSelectedDroneIdChange={this.onSelectedDroneIdChange}
+              activeDroneData={this.state.activeDroneData}
             />
             <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: 15}}>
               <a href="/tree-video-surveillance/drone-path"><Button type="primary">Tiếp theo</Button></a>
@@ -108,19 +145,19 @@ class DroneInfoMap extends Component {
             id={1}
             lat={20.91507}
             lng={105.74766}
-            checked={1 == this.props.selectedDroneId}
+            checked={0 == this.props.selectedDroneId}
           />
           <DroneIcon
             id={2}
             lat={20.91907}
             lng={105.74766}
-            checked={2 == this.props.selectedDroneId}
+            checked={1 == this.props.selectedDroneId}
           />
           <DroneIcon
             id={3}
             lat={20.91707}
             lng={105.74966}
-            checked={3 == this.props.selectedDroneId}
+            checked={2 == this.props.selectedDroneId}
           />
         </GoogleMapReact>
       </div>
@@ -217,23 +254,11 @@ class DroneList extends React.Component {
 
     ];
 
-    const data = [
-      {
-        key: '1',
-        name: 'DRONE01',
-      },
-      {
-        key: '2',
-        name: 'DRONE02',
-      },
-      {
-        key: '3',
-        name: 'DRONE03',
-      },
-    ];
-    for (let i = 4; i < 100; i++) {
-      data.push({ key: i + '', name: 'DRONE0' + i })
-    }
+    const data = this.props.activeDroneData.map((drone) => ({
+      key: drone.key,
+      name: drone.name
+    }))
+
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         this.onSelectedDroneKeyChange(selectedRowKeys)
@@ -301,6 +326,7 @@ class StepSurveillance extends React.Component {
   render() {
     return (
       <Steps current={this.props.currentStep} style={{ marginBottom: 15 }}>
+        <Step title="Chọn khu vực" />
         <Step title="Chọn miền giám sát" />
         <Step title="Chọn drone" />
         <Step title="Giám sát" />
