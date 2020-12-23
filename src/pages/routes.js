@@ -34,6 +34,7 @@ import LogObjMonitor from './LogObjMonitor';
 import LogRegion from './LogRegion';
 import LogStatistic from './LogStatistic';
 import LogUAV from './LogUAV';
+import LogDashboardPage from './LogTreeProject';
 //Payload
 import ListPayload from './Payload/PayloadManagement/List';
 import ListTypePayload from './Payload/PayloadType/List';
@@ -55,11 +56,16 @@ import DScard from './Payload/PayloadSDcard';
 import ImageVideo from './ImageVideo';
 import Detail from './ImageVideo/detail';
 import Stream from './ImageVideo/stream';
+//monitored Object Group 05
+import CategoryMonitored from './MonitoredObject/Category/component';
+import MonitoredObject from './MonitoredObject/MonitoredObject/component';
+import MonitoredObjectCreate from './MonitoredObject/MonitoredObject/component/monitoredObjectCreate';
+import MonitoredObjectView from './MonitoredObject/MonitoredObject/component/MonitoredObjectView';
 // incident group 09
-import IncidentGroup9 from "./Incident/Incident";
-import ImageGallery from "./Incident/ImageGallery";
-import VideoGallery from "./Incident/VideoGallery";
-import IncidentEdit from "./Incident/Incident/edit";
+import IncidentGroup9 from './Incident/Incident';
+import ImageGallery from './Incident/ImageGallery';
+import VideoGallery from './Incident/VideoGallery';
+import IncidentEdit from './Incident/Incident/edit';
 
 // Tree function 1
 import VideoSurveillance from './GroupFunction1/VideoSurveillance';
@@ -74,6 +80,7 @@ import TableDroneState from './TableDroneState';
 import MapTest from './MapTest';
 import FlightPathManagement from './FlightPathManagement';
 import FlightSchedule from './FlightSchedule';
+import DetailMonitorCampaignPage from './FlightHub/DetailMonitorCampaign';
 
 export const routes = [
   {
@@ -115,13 +122,18 @@ export const routes = [
     component: CreateMonitorCampaignPage,
   },
   {
-    path: '/flight-hub-monitor-campaigns/:id',
+    path: '/flight-hub-monitor-campaigns/update/:id',
     component: UpdateMonitorCampaignPage,
+  },
+  {
+    path: '/flight-hub-monitor-campaigns/:id',
+    component: DetailMonitorCampaignPage,
   },
   {
     path: '/flight-hub-monitor-campaigns',
     component: ListMonitorCampaignPage,
   },
+
   {
     path: '/flight-hub-other-params',
     component: ListLabelsPage,
@@ -219,6 +231,30 @@ export const routes = [
     path: '/supervised-object',
     component: () => <div>Đối tượng giám sát</div>,
   },
+  // view monitored Object
+  {
+    path: '/monitored-object-management/:option/:id',
+    component: MonitoredObjectView,
+    exact: true,
+  },
+  // create monitored Object
+  {
+    path: '/monitored-object-management/:option',
+    component: MonitoredObjectCreate,
+    exact: true,
+  },
+  //view List Monitored Object
+  {
+    path: '/monitored-object-management',
+    component: MonitoredObject,
+    exact: true,
+  },
+  //View Category Monitored
+  {
+    path: '/category-monitored-object-management',
+    component: CategoryMonitored,
+    exact: true,
+  },
   {
     path: '/statistic',
     component: () => <div>Báo cáo thống kê</div>,
@@ -288,6 +324,10 @@ export const routes = [
     component: LogUAV,
   },
   {
+    path: '/log-dash-board-page',
+    component: LogDashboardPage,
+  },
+  {
     path: '/surveillance-domain-area',
     component: () => <div>Quản lý khu vực</div>,
   },
@@ -331,24 +371,23 @@ export const routes = [
     component: ListUserMeta,
   },
   {
-    path: "/incidents",
+    path: '/incidents',
     component: () => <IncidentGroup9 />,
-    exact: true
+    exact: true,
   },
-  
-  {
-    path: "/incidents/:id",
-    component: () => <IncidentEdit />,
-    exact: true
 
+  {
+    path: '/incidents/:id',
+    component: () => <IncidentEdit />,
+    exact: true,
   },
   {
-    path: "/imageGallery",
+    path: '/imageGallery',
     component: () => <ImageGallery />,
-    exact: true
+    exact: true,
   },
   {
-    path: "/videoGallery",
+    path: '/videoGallery',
     component: () => <VideoGallery />,
   },
   {
