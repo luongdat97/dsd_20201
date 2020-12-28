@@ -18,6 +18,9 @@ import ManageArea from '../components/Aera/ManageArea';
 import Manage from '../components/SurveillanceDomain/Manage';
 import ManageEdit from '../components/SurveillanceDomain/ManageEdit';
 import Dashboard from './Dashboard';
+import CreateReport from './Report/CreateReport';
+import ViewReport from './Report/ViewReport';
+import ManageReportTemplate from './Report/ManageReportTemplate';
 import Incident from './Incident';
 import MyList from '../components/Group4/Notification';
 import DetailedNotification from '../components/Group4/DetailedNotification';
@@ -78,11 +81,34 @@ import FlightPathDrone from './FLightPathDrone';
 import FlightPoint from './FlightPoint';
 import TableDroneState from './TableDroneState';
 import MapTest from './MapTest';
-import FlightPathManagement from './FlightPathManagement';
+import FlightPath from './FlightPath';
 import FlightSchedule from './FlightSchedule';
 import DetailMonitorCampaignPage from './FlightHub/DetailMonitorCampaign';
 
+//DE DIEU
+import HomeDeDieu from "./Home/DeDieu";
+import StatisticDeDieu from './Dashboard/IncidentDashboard'
+import Task1 from './Home/DeDieu/Task1/index'
+import Task5 from './Home/DeDieu/Task5/index'
+
 export const routes = [
+  {
+    path: '/',
+    component: Dashboard,
+    exact: true,
+  },
+  {
+    path: '/dedieu',
+    component: HomeDeDieu,
+  },
+  {
+    path: '/dedieu-ncn1',
+    component: Task1,
+  },
+  {
+    path: '/dedieu-ncn5',
+    component: Task5,
+  },
   {
     path: '/dashboard',
     component: Dashboard,
@@ -106,7 +132,7 @@ export const routes = [
   },
   {
     path: '/flight-path',
-    component: FlightPathManagement,
+    component: FlightPath,
   },
   // {
   //   path: '/flight-schedule',
@@ -171,6 +197,10 @@ export const routes = [
   {
     path: '/payload-configuration',
     component: PayloadSetting,
+  },
+  {
+    path: '/sucodedieu-statistics',
+    component: StatisticDeDieu,
   },
   /* {
     path: '/payload-maintenance',
@@ -256,8 +286,20 @@ export const routes = [
     exact: true,
   },
   {
-    path: '/statistic',
-    component: () => <div>Báo cáo thống kê</div>,
+    path: '/report',
+    component: () => <div>Thống kê</div>,
+  },
+  {
+    path: '/create-report',
+    component: CreateReport,
+  },
+  {
+    path: '/view-report',
+    component: ViewReport,
+  },
+  {
+    path: '/manage-report-template',
+    component: ManageReportTemplate,
   },
   {
     path: '/problems',
@@ -371,23 +413,24 @@ export const routes = [
     component: ListUserMeta,
   },
   {
-    path: '/incidents',
+    path: "/incidents",
     component: () => <IncidentGroup9 />,
-    exact: true,
+    exact: true
   },
 
   {
-    path: '/incidents/:id',
+    path: "/incidents/:id",
     component: () => <IncidentEdit />,
-    exact: true,
+    exact: true
+
   },
   {
-    path: '/imageGallery',
+    path: "/imageGallery",
     component: () => <ImageGallery />,
-    exact: true,
+    exact: true
   },
   {
-    path: '/videoGallery',
+    path: "/videoGallery",
     component: () => <VideoGallery />,
   },
   {

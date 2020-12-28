@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../Styles/StyleListIncidents.css';
-import { Table, Modal, Button, Input, Space, Spin, Select } from 'antd';
+import { Table, Modal, Button, Input, Space, Spin, Select ,message } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import { Link, useLocation, useHistory } from 'react-router-dom';
@@ -32,8 +32,9 @@ const TypeTask = () => {
     CAY_TRONG: { id: '333333', name: 'Sự cố  cây trồng' },
     LUOI_DIEN: { id: '000000', name: 'Sự cố lưới điện trên cao' },
   };
-  const API_TOKEN = '4c901bcdba9f440a2a7c31c0bcbd78ec';
-  const CURRENT_TYPE = 'LUOI_DIEN';
+  const API_TOKEN =
+    localStorage.getItem('token') || '4c901bcdba9f440a2a7c31c0bcbd78ec';
+  const CURRENT_TYPE = localStorage.getItem('project-type') || 'LUOI_DIEN';
 
   useEffect(() => {
     getData();
@@ -51,7 +52,6 @@ const TypeTask = () => {
     })
       .then(function (response) {
         //handle success
-        console.log(response);
         setLoadingTable(false);
         setdataType(response.data);
       })
@@ -147,7 +147,7 @@ const TypeTask = () => {
           />
           <DeleteOutlined
             style={{ fontSize: 22, color: 'red', marginLeft: 30 }}
-            onClick={(e) => submit(record)}
+            onClick={(e) => _delete(record)}
             data-toggle="tooltip"
             data-placement="top"
             title="Xóa công việc"
@@ -157,7 +157,7 @@ const TypeTask = () => {
     },
   ];
 
-  const submit = (record) => {
+  const _delete = (record) => {
     confirmAlert({
       title: 'Xóa công việc',
       message: 'Bạn chắc chắn muốn xóa công việc ' + record.name + '?',
@@ -176,7 +176,7 @@ const TypeTask = () => {
             })
               .then(function (response) {
                 //handle success
-                console.log(response);
+                message.success("Xóa công việc thành công")
                 setLoadingTable(true);
                 getData();
               })
@@ -188,14 +188,16 @@ const TypeTask = () => {
         },
         {
           label: 'No',
-          onClick: () => {},
+          onClick: () => { },
         },
       ],
     });
   };
 
   const editData = (record) => {
-    setDataEdit(record);
+    var mydata = record;
+    mydata.prioritize = record.prioritize == true ? 1 : 0;
+    setDataEdit(mydata);
     setVisibleModal(true);
   };
 
@@ -204,6 +206,7 @@ const TypeTask = () => {
   };
   const handleCancel = () => {
     setVisibleModal(false);
+    setVisibleModal1(false);
   };
 
   const addData = () => {
@@ -231,12 +234,11 @@ const TypeTask = () => {
   };
 
   const submitEditData = () => {
-    console.log(dataEdit);
     let id = dataEdit.id;
     let name = dataEdit.name;
     let description = dataEdit.description;
     let employee_number = dataEdit.employee_number;
-    let prioritize = dataEdit.prioritize == true ? 1 : 0;
+    let prioritize = dataEdit.prioritize;
     axios({
       method: 'put',
       url:
@@ -250,8 +252,8 @@ const TypeTask = () => {
     })
       .then(function (response) {
         //handle success
-        console.log(response);
         handleCancel();
+        message.success("Sửa chi tiết công việc thành công");
         setLoadingTable(true);
         getData();
       })
@@ -259,33 +261,29 @@ const TypeTask = () => {
         //handle error
         console.log(err);
       });
+
   };
 
   const submitAddData = () => {
-    console.log(dataEdit);
-    let name = dataEdit.name;
-    let description = dataEdit.description;
-    let employee_number = dataEdit.employee_number;
-    let prioritize = dataEdit.prioritize == true ? 1 : 0;
+    var formData = new FormData();
+    formData.append("name", dataEdit.name);
+    formData.append("description", dataEdit.description);
+    formData.append("employee_number", dataEdit.employee_number);
+    formData.append("prioritize", dataEdit.prioritize);
     axios({
       method: 'post',
       url: URL_API + `/task-type/create`,
-      // url: URL_API + "/report/listing",
       headers: {
         'api-token': API_TOKEN,
         'project-type': CURRENT_TYPE,
       },
-      body: {
-        name: name,
-        description: description,
-        employee_number: employee_number,
-        prioritize: prioritize,
-      },
+      data: formData
     })
       .then(function (response) {
         //handle success
-        console.log(response);
+        
         handleCancel();
+        message.success("Thêm công việc thành công")
         setLoadingTable(true);
         getData();
       })
@@ -297,7 +295,7 @@ const TypeTask = () => {
 
   return (
     <div>
-      <div className="header" onClick={() => {}}>
+      <div className="header" onClick={() => { }}>
         Danh sách các công việc để xử lý sự cố
       </div>
       <Input.Search
@@ -354,8 +352,8 @@ const TypeTask = () => {
           onChange={(e) => onChangeValue('prioritize', e)}
           style={{ width: '100%' }}
         >
-          <Option value={true}>true</Option>
-          <Option value={false}>false</Option>
+          <Option value={1}>true</Option>
+          <Option value={0}>false</Option>
         </Select>
 
         <Button
@@ -401,8 +399,8 @@ const TypeTask = () => {
           onChange={(e) => onChangeValue('prioritize', e)}
           style={{ width: '100%' }}
         >
-          <Option value={true}>true</Option>
-          <Option value={false}>false</Option>
+          <Option value={1}>true</Option>
+          <Option value={0}>false</Option>
         </Select>
 
         <Button
